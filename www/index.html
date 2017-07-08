@@ -27,12 +27,15 @@
 
 
     $(function () {
+
         var socket = io.connect();
         var message = $('#message');
         var messageForm = $('#messageForm');
         var chat = $('#chat');
-
-
+        var initial = 0;
+//================initilize message=======
+        socket.emit('initial-messages' , "initial");
+//========================================
         messageForm.submit(function (data) {
            data.preventDefault();
            socket.emit('send-message' , message.val());
@@ -41,6 +44,15 @@
         
         socket.on('new-message' , function (data) {
             chat.append('<ul class="list-group" > <li class="list-group-item"> '+ data.msg+'</li> </ul>');
+        })
+        socket.on('initial-message' , function (data) {
+            if(initial == 0) {
+                var arr = $.parseJSON(data.msg);
+                for (var i = 0; i < arr.length; i++) {
+                    chat.append('<ul class="list-group" > <li class="list-group-item"> ' + arr[i].message + '</li> </ul>');
+                }
+                initial++;
+            }
         })
 
 
