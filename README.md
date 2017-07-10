@@ -15,6 +15,5 @@ node server.js
 ```
 
 
-<a href="https://serene-dusk-34918.herokuapp.com/">Demo App https://serene-dusk-34918.herokuapp.com/</a><br>
-<a href="http://34.212.100.71:3000/">Demo App at http://34.212.100.71:3000/</a>
+<a href="http://34.212.100.71:3000/">Demo App      at http://34.212.100.71:3000/</a>
 
