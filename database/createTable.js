@@ -14,11 +14,18 @@ con.connect(function(err) {
     if (err) throw err;
     console.log("Connected!");
 
-    var sql = "CREATE TABLE IF NOT EXISTS  message (id INTEGER(10), message VARCHAR(2550))";
+    var sql = "CREATE TABLE IF NOT EXISTS  message (id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY, message VARCHAR(2550) , user VARCHAR(250))";
     con.query(sql, function (err, result) {
         if (err) throw err;
-        console.log("Table created");
+        console.log("message Table created");
     });
+    var sql = "CREATE TABLE IF NOT EXISTS  login (id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY, username VARCHAR(250) , password VARCHAR(250))";
+    con.query(sql, function (err, result) {
+        if (err) throw err;
+        console.log("login Table created");
+    });
+
+
 
 
 });

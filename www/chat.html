@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>chat</title>
+    <link href="bootstrap/dist/css/bootstrap.css" rel="stylesheet">
+    <style >
+
+        body {
+            position: relative;
+            height:100%;
+        }
+        #messageForm {
+
+        }
+        .jumbotron {
+            max-height: 500px;
+            overflow: scroll;
+        }
+        .messageRow {
+            /*border: 2px solid grey ;*/
+            border:  2px solid  #00b3ee;
+        }
+        .mySide {
+            text-align: right;
+        }
+        .list-group {
+            margin-bottom: 0px;
+        }
+
+
+    </style>
+</head>
+<body  >
+<ul class="nav nav-tabs">
+    <li role="presentation" class="dropdown">
+        <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+             <div id="username" >
+
+             </div>
+        </a>
+
+    </li>
+</ul>
+<br>
+
+<div class="row">
+    <div class="col-sm-4"></div>
+    <div class="col-sm-7 messageRow" >
+        <br>
+        <div class="jumbotron">
+            <div id="chat">
+            </div>
+        </div>
+        <form id="messageForm">
+            <input type="text" class="form-control" id="message" placeholder="Message">
+            <!--<button type="submit" class="btn btn-default">Submit</button>-->
+        </form>
+        <br>
+    </div>
+</div>
+</div>
+<script src="/jquery/dist/jquery.js" > </script>
+<script src="/socket.io/socket.io.js" > </script>
+
+<script>
+
+
+    $(function () {
+
+        var socket = io.connect();
+        var message = $('#message');
+        var messageForm = $('#messageForm');
+        var chat = $('#chat');
+        var username = $('#username');
+        var user ;
+
+//        username.text('narendra');
+
+        var initial = 0;
+//================initilize message=======
+        socket.emit('username' , "narendra");
+        socket.emit('initial-messages' , "initial");
+//========================================
+        messageForm.submit(function (data) {
+           data.preventDefault();
+           socket.emit('send-message' , message.val());
+
+        });
+        socket.on('new-message' , function (data) {
+            if(data.username === user) {
+                chat.append('<ul class="list-group mySide" > <li class="list-group-item"> ' + data.msg + '</li> </ul>');
+            }else {
+                chat.append('<ul class="list-group " > <li class="list-group-item"> '+data.username+'  :  ' + data.msg + '</li> </ul>');
+            }
+            $('.jumbotron').scrollTop($('#chat').height());
+        });
+        socket.on('initial-message' , function (data) {
+            if(initial === 0) {
+                var arr = $.parseJSON(data.msg);
+                for (var i = 0; i < arr.length; i++) {
+                    if(arr[i].user === user) {
+                        chat.append('<ul class="list-group mySide" > <li class="list-group-item"> ' + arr[i].message + '</li> </ul>');
+                    }else {
+                        chat.append('<ul class="list-group" > <li class="list-group-item"> ' +arr[i].user +'  :   '+ arr[i].message + '</li> </ul>');
+                    }
+
+                }
+                $('.jumbotron').scrollTop($('#chat').height());
+                initial++;
+            }
+        });
+        socket.on('username' , function (data) {
+            username.text(data.username);
+            user = data.username;
+        });
+    });
+</script>
+</body>
+
+
+
+</html>
